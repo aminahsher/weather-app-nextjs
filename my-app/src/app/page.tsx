@@ -14,7 +14,7 @@ function getCurrentDate() {
 export default function Home() {
   const date = getCurrentDate();
   const [weatherData, setWeatherData] = useState(null);
-  const [city, setCity] = useState("Lahore");
+  const [city, setCity] = useState("");
 
   async function fetchData(cityName: string) {
     try {
@@ -23,15 +23,38 @@ export default function Home() {
       );
       const jsonData = await response.json();
       setWeatherData(jsonData.data);
+
+      
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+  async function fetchDataByCoordinates(latitude:string, longitude:string) {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/weather?lat=${latitude}&lon=${longitude}`
+      );
+      const jsonData = (await response.json()).data;
+      setWeatherData(jsonData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }
 
   useEffect(() => {
-    fetchData("Lahore");
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchDataByCoordinates(latitude, longitude);
+        },
+        (error) => {
+          console.error("Error getting geolocation:", error);
+        }
+      );
+    }
   }, []);
-
+  
   return (
     <>
       <h2 className="text-center bg-gray-200 font-semibold text-black text-2xl ">Weather App</h2>
