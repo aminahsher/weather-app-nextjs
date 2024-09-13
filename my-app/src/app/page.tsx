@@ -123,7 +123,7 @@ export default function Home() {
             <div className="place text-lg font-bold mt-2">
               {weatherData?.name}
             </div>
-            <div className="date text-lg mt-2">{date}</div>
+            <div className="date text-lg mt-2 font-medium text-zinc-500">{date}</div>
             
             <div className="weatherDetails mt-4">
               <div className="humidity flex justify-between">
